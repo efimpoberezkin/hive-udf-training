@@ -29,8 +29,8 @@ public class ParseUATest {
         ParseUA udf = new ParseUA();
 
         StringObjectInspector outputOI = PrimitiveObjectInspectorFactory.writableStringObjectInspector;
-        List<String> outputFieldNames = Arrays.asList("device", "os", "browser", "type");
-        List<ObjectInspector> outputInspectors = Arrays.asList(outputOI, outputOI, outputOI, outputOI);
+        List<String> outputFieldNames = Arrays.asList("device", "os", "browser", "browser_group", "type");
+        List<ObjectInspector> outputInspectors = Arrays.asList(outputOI, outputOI, outputOI, outputOI, outputOI);
 
         StructObjectInspector resultInspector =
                 ObjectInspectorFactory.getStandardStructObjectInspector(outputFieldNames, outputInspectors);
@@ -42,11 +42,12 @@ public class ParseUATest {
         Object result = udf.evaluate(new DeferredObject[]{new GenericUDF.DeferredJavaObject(argument)});
         List<Object> resultStruct = resultInspector.getStructFieldsDataAsList(result);
 
-        assertEquals(4, resultStruct.size());
+        assertEquals(5, resultStruct.size());
         assertEquals("Computer", resultStruct.get(0).toString());
         assertEquals("Windows XP", resultStruct.get(1).toString());
         assertEquals("Internet Explorer 6", resultStruct.get(2).toString());
-        assertEquals("Browser", resultStruct.get(3).toString());
+        assertEquals("Internet Explorer", resultStruct.get(3).toString());
+        assertEquals("Browser", resultStruct.get(4).toString());
     }
 
     @Test(expected = HiveException.class)

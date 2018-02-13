@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * UDF that parses UA string into separate fields: device, os, browser, type.
+ * UDF that parses UA string into separate fields: device, os, browser, browser_group, type.
  */
 public class ParseUA extends GenericUDF {
 
@@ -27,8 +27,8 @@ public class ParseUA extends GenericUDF {
     public ObjectInspector initialize(ObjectInspector[] args) {
 
         StringObjectInspector outputOI = PrimitiveObjectInspectorFactory.writableStringObjectInspector;
-        List<String> outputFieldNames = Arrays.asList("device", "os", "browser", "type");
-        List<ObjectInspector> outputInspectors = Arrays.asList(outputOI, outputOI, outputOI, outputOI);
+        List<String> outputFieldNames = Arrays.asList("device", "os", "browser", "browser_group", "type");
+        List<ObjectInspector> outputInspectors = Arrays.asList(outputOI, outputOI, outputOI, outputOI, outputOI);
 
         return ObjectInspectorFactory.getStandardStructObjectInspector(outputFieldNames, outputInspectors);
     }
@@ -60,13 +60,14 @@ public class ParseUA extends GenericUDF {
     }
 
     private Object parseUAString(String argument) {
-        Object[] result = new Object[4];
+        Object[] result = new Object[5];
         UserAgent ua = new UserAgent(argument);
 
         result[0] = new Text(ua.getOperatingSystem().getDeviceType().getName());
         result[1] = new Text(ua.getOperatingSystem().getName());
         result[2] = new Text(ua.getBrowser().getName());
-        result[3] = new Text(ua.getBrowser().getBrowserType().getName());
+        result[3] = new Text(ua.getBrowser().getGroup().getName());
+        result[4] = new Text(ua.getBrowser().getBrowserType().getName());
 
         return result;
     }
